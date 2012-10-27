@@ -1,15 +1,40 @@
+# Redmine Local Avatars plugin
+#
+# Copyright (C) 2010  Andrew Chaika, Luca Pireddu
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
 require 'redmine'
-require 'users_helper_avatar_patch'
-require 'users_avatar_patch'
-require 'users_controller_patch'
-require 'attachments_controller_patch'
-require 'application_helper_avatar_patch'
-require 'my_account_hook'
-require 'my_account_patch'
 
 Redmine::Plugin.register :redmine_local_avatars do
   name 'Redmine Local Avatars plugin'
-  author 'A. Chaika'
-  description 'This is a plugin for Redmine'
-  version '0.0.3-forked'
+  author 'Andrew Chaika and Luca Pireddu'
+  description 'This plugin lets users upload avatars directly into Redmine'
+	version '0.1.1'
 end
+
+RedmineApp::Application.config.after_initialize do
+  require_dependency 'project'
+
+  ApplicationHelper.send(:include,  RedmineLocalAvatars::ApplicationHelperAvatarPatch)
+  User.send(:include,  RedmineLocalAvatars::UsersAvatarPatch)
+  UsersHelper.send(:include,  RedmineLocalAvatars::UsersHelperAvatarPatch)
+  UsersController.send(:include,  RedmineLocalAvatars::UsersControllerPatch)
+  AccountController.send(:include,  RedmineLocalAvatars::AccountControllerPatch)
+  MyController.send(:include,  RedmineLocalAvatars::MyControllerPatch)
+end
+
+# hooks
+require 'redmine_local_avatars/hooks'

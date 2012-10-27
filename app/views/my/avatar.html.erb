@@ -1,0 +1,26 @@
+<div class="contextual">
+  <%= link_to(l(:button_change_password), {:action => 'password'}, :class => 'icon icon-passwd') if @user.change_password_allowed? %>
+  <%= call_hook(:view_my_account_contextual, :user => @user)%>
+</div>
+
+<h2><%=l(:label_my_account)%></h2>
+<%= error_messages_for 'user' %>
+
+<%= form_tag({ :controller => 'my', :action => 'save_avatar', :id => @user }, :multipart => true) do -%>
+  <fieldset class="box tabular">
+    <h3><%= l(:label_avatar)%></h3>
+    <div style="width: 128px; height: 128px; border: 1px silver solid;">
+    <%= avatar(@user, :size => "128") %>
+    </div><br>
+    <%= file_field_tag "avatar" %><br />
+  </fieldset>
+
+  <%= submit_tag l(:button_save) %>
+  <%= submit_tag l(:button_delete), :confirm => l(:are_you_sure_delete_avatar) %>
+<% end -%>
+
+<% content_for :sidebar do %>
+<%= render :partial => 'sidebar' %>
+<% end %>
+
+<% html_title(l(:label_my_account)) -%>
