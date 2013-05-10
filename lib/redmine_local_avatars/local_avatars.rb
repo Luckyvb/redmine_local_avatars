@@ -35,7 +35,6 @@ module RedmineLocalAvatars
       # attachments on the user (just because there aren't any
       # now doesn't mean there won't be in the future.  It should
       # be changed to only remove an attachment with description == 'avatar'
-      logger.error "SAVIIIINNG"
       @user.attachments.clear
       if params[:commit] == l(:button_delete) then
         @possible_error = l(:unable_to_delete_avatar)
