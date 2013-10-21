@@ -17,7 +17,7 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 module RedmineLocalAvatars
-	module MyControllerPatch
+  module MyControllerPatch
     def self.included(base) # :nodoc:
       base.send(:include, AttachmentsHelper)
       base.send(:include, LocalAvatars)
@@ -25,6 +25,7 @@ module RedmineLocalAvatars
 
       base.class_eval do
         helper :attachments
+        before_filter :find_user, :only => [ :save_avatar ]
       end
     end
 
@@ -32,9 +33,18 @@ module RedmineLocalAvatars
       def avatar
         @user = User.current
       end
+
+      def find_user
+      	if User.current.admin? && params[:id].present?
+      	  @user = User.find(params[:id])
+      	else
+      	  @user = User.current
+      	end
+      rescue ActiveRecord::RecordNotFound
+        render_404
+      end
       
       def save_avatar
-        @user = User.current
         begin
           save_or_delete # see the LocalAvatars module
           redirect_to :action => 'account', :id => @user
