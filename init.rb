@@ -28,13 +28,13 @@ end
 RedmineApp::Application.config.after_initialize do
   require_dependency 'project'
 
-  ApplicationHelper.send(:include,  RedmineLocalAvatars::ApplicationHelperAvatarPatch)
-  User.send(:include,  RedmineLocalAvatars::UsersAvatarPatch)
-  UsersHelper.send(:include,  RedmineLocalAvatars::UsersHelperAvatarPatch)
-  UsersController.send(:include,  RedmineLocalAvatars::UsersControllerPatch)
-  AccountController.send(:include,  RedmineLocalAvatars::AccountControllerPatch)
-  MyController.send(:include,  RedmineLocalAvatars::MyControllerPatch)
+  ApplicationHelper.send(:include,  LocalAvatars::ApplicationHelperAvatarPatch)
+  User.send(:include,  LocalAvatars::UsersAvatarPatch)
+  UsersHelper.send(:include,  LocalAvatars::UsersHelperAvatarPatch)
+  UsersController.send(:include,  LocalAvatars::UsersControllerPatch)
+  AccountController.send(:include,  LocalAvatars::AccountControllerPatch)
+  MyController.send(:include,  LocalAvatars::MyControllerPatch)
 end
 
 # hooks
-require 'redmine_local_avatars/hooks'
+require 'local_avatars/hooks'
