@@ -20,21 +20,16 @@ require 'redmine'
 
 Redmine::Plugin.register :redmine_local_avatars do
   name 'Redmine Local Avatars plugin'
-  author 'Andrew Chaika and Luca Pireddu'
+  author 'Andrew Chaika, Luca Pireddu and Ricardo Santos'
   description 'This plugin lets users upload avatars directly into Redmine'
-	version '0.1.1'
+  version '0.2.0'
+  requires_redmine :version_or_higher => '2.1.0'
 end
 
 RedmineApp::Application.config.after_initialize do
   require_dependency 'project'
-
-  ApplicationHelper.send(:include,  LocalAvatars::ApplicationHelperAvatarPatch)
-  User.send(:include,  LocalAvatars::UsersAvatarPatch)
-  UsersHelper.send(:include,  LocalAvatars::UsersHelperAvatarPatch)
-  UsersController.send(:include,  LocalAvatars::UsersControllerPatch)
-  AccountController.send(:include,  LocalAvatars::AccountControllerPatch)
-  MyController.send(:include,  LocalAvatars::MyControllerPatch)
+  require_dependency 'local_avatars/infectors'
 end
 
 # hooks
-require 'local_avatars/hooks'
+require_dependency 'local_avatars/hooks'

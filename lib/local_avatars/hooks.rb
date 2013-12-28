@@ -15,15 +15,9 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
-
-
-require 'redmine'
-
-module RedmineLocalAvatars
+module LocalAvatars
   class Hooks < Redmine::Hook::ViewListener
-    # This just renders the partial in
-    # app/views/hooks/redmine_local_avatars/_view_my_account_contextual.rhtml
     render_on :view_my_account_contextual,
-               :partial => 'hooks/redmine_local_avatars/view_my_account_contextual'
+              :partial => 'hooks/local_avatars/view_my_account_contextual'
   end
 end

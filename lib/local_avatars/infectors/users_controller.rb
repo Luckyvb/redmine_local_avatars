@@ -16,12 +16,10 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-module RedmineLocalAvatars
-  module UsersAvatarPatch
-    def self.included(base) # :nodoc:
-      base.class_eval do
-        acts_as_attachable
-      end
+module LocalAvatars::Infectors::UsersController
+  def self.included(receiver) # :nodoc:
+    receiver.instance_eval do
+      helper :avatar
     end
   end
 end

@@ -16,17 +16,17 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-module RedmineLocalAvatars
-  module UsersHelperAvatarPatch
-    def self.included(base) # :nodoc:
-      base.class_eval do
-        alias_method_chain :user_settings_tabs, :avatar
-      end
+module LocalAvatars::Infectors::MyController
+  def self.included(receiver) # :nodoc:
+    receiver.send(:include, InstanceMethods)
+    receiver.instance_eval do
+      helper :avatar
     end
+  end
 
-    def user_settings_tabs_with_avatar
-      tabs = user_settings_tabs_without_avatar
-      tabs << {:name => 'avatar', :partial => 'users/avatar', :label => :label_avatar}
-    end
+  module InstanceMethods
+    def avatar_edit
+      @user = User.current
+   	end
   end
 end

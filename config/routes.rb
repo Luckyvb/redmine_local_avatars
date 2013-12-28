@@ -1,7 +1,7 @@
-Rails.application.routes.draw do 
-    match 'my/avatar', :to => 'my#avatar', :via => [:get, :post]
-    match 'my/save_avatar/:id', :to => 'my#save_avatar', :via => [:get, :post]
-    match 'account/get_avatar/:id', :to => 'account#get_avatar', :constraints => {:id=>/\d+/}, :via => [:get, :post]
-    match 'users/save_avatar/:id', :to => 'users#save_avatar', :constraints => {:id=>/\d+/}, :via => [:get, :post]
-    match 'users/get_avatar/:id', :to => 'users#get_avatar', :constraints => {:id=>/\d+/}, :via => [:get, :post]
+constraints(:id=>/\d+/) do
+  get 'my/avatar/edit', :to => 'my#avatar_edit', :as => 'edit_my_avatar'
+  post 'users/:id/avatar/upload.:format', :to => 'avatar#upload', :as => 'avatar_upload'
+  get 'users/:id/avatar', :to => 'avatar#show', :as => 'user_avatar'
+  post 'users/:id/avatar', :to => 'avatar#update', :as => 'update_user_avatar'
+  delete 'users/:id/avatar', :to => 'avatar#destroy', :as => 'destroy_user_avatar'
 end
