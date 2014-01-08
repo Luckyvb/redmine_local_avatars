@@ -12,7 +12,8 @@ Installation
 
 1. Place the plugin in the `plugins` directory of your Redmine
 installation (or create a symlink).
-2. Execute `bundle install` in one of the following ways:
+2. Execute `bundle install` in one of the following ways on the
+redmine installation folder:
   1. To disable the image cropping feature execute:  
   ```
   bundle install --without=rmagick mini_magick
