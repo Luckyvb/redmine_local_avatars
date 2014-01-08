@@ -66,6 +66,7 @@ jQuery(function($) {
     captureButton: '#capture-webcam',
     camerasSelect: '#capture-cameras select',
 
+    resolutionWidth: 480, resolutionHeight: 480,
     swffile:   $photographer.data('swffile'),
     filefield: 'attachment[file]',
     filename:  $photographer.data('filename'),
