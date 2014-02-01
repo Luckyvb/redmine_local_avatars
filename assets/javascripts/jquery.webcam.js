@@ -1,10 +1,10 @@
 /**
-* jQuery AS3 Webcam
+* jQuery Webcam
 *
-* Copyright (c) 2012, Sergey Shilko (sergey.shilko@gmail.com)
+* Copyright (c) 2014, Sergey Shilko (sergey.shilko@gmail.com)
 *
 * @author Sergey Shilko
-* @see https://github.com/sshilko/jQuery-AS3-Webcam
+* @see https://github.com/thorin/jquery-webcam
 *
 **/
 jQuery(function($) {
@@ -65,8 +65,8 @@ jQuery(function($) {
               resolutionHeight: this.options.resolutionHeight,
               smoothing: this.options.videoSmoothing,
               deblocking: this.options.videoDeblocking,
-              StageScaleMode: this.options.StageScaleMode,
-              StageAlign: this.options.StageAlign
+              StageScaleMode: this.options.stageScaleMode,
+              StageAlign: this.options.stageAlign
             })
           }))
 
@@ -84,7 +84,7 @@ jQuery(function($) {
     getCameraList:   function()  { try { return this.cam.getCameraList() } catch(e) { this.error(e) } },
     getResolution:   function()  { try { return this.cam.getResolution() } catch(e) { this.error(e) } },
     pause:           function()  { try { return this.cam.pause()         } catch(e) { this.error(e) } },
-    resume:          function()  { try { return this.cam.resume()        } catch(e) { this.error(e) } }
+    play:            function()  { try { return this.cam.play()          } catch(e) { this.error(e) } }
   })
 
   WebcamGum.prototype = $.extend({}, WebcamBase, {
@@ -252,7 +252,7 @@ jQuery(function($) {
     getCameraList: function()  { return [] },
     getResolution: function()  { return [this.video.videoWidth, this.video.videoHeight] },
     pause:         function()  { this.video.pause() },
-    resume:        function()  { this.video.play() },
+    play:          function()  { this.video.play() },
 
     destroy: function() {
       if (this.video.mozSrcObject !== undefined) {
@@ -341,7 +341,7 @@ jQuery(function($) {
        * @see http://help.adobe.com/en_US/FlashPlatform/reference/actionscript/3/flash/display/Stage.html#scaleMode
        * @see http://help.adobe.com/en_US/FlashPlatform/reference/actionscript/3/flash/display/StageScaleMode.html
        */
-      StageScaleMode: 'exactFit',
+      stageScaleMode: 'noScale',
 
       /**
        * Aligns video output on stage
@@ -350,7 +350,7 @@ jQuery(function($) {
        * @see http://help.adobe.com/en_US/FlashPlatform/reference/actionscript/3/flash/display/Stage.html#align
        * Empty value defaults to "centered" option
        */
-      StageAlign: '',
+      stageAlign: 'TL',
 
       swffile: "sAS3Cam.swf",
     })

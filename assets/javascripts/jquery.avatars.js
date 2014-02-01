@@ -122,7 +122,7 @@ jQuery(function ($) {
 
       filename: null, filefield: null,
       postUrl: '#', postData: {},
-      StageScaleMode: 'noScale', StageAlign: 'TL'
+      stageScaleMode: 'noScale', stageAlign: 'TL'
     },
 
     _create: function () {
@@ -156,7 +156,7 @@ jQuery(function ($) {
 
       $('<div>').appendTo(this.$webcamContainer).webcam($.extend(this.options, {
         noCameraFound:  function () { self._error('Web camera is not available') },
-        swfApiFail:     function () { self._error('Internal camera plugin error') },
+        error:          function () { self._error('Internal camera plugin error') },
         cameraDisabled: function () { self._error('Please allow access to your camera') },
         cameraEnabled:  function () { self._cameraEnabled(this); }
       }));
@@ -239,7 +239,7 @@ jQuery(function ($) {
   });
 
   /** File Uploader */
-  $.widget("avatars.uploader", {
+  $.widget('avatars.uploader', {
     options : {
       attachmentId:         1,
       attachmentsContainer: '#attachments_fields',
@@ -299,7 +299,7 @@ jQuery(function ($) {
     },
 
     errorAfterUpload: function (data) {
-      this._trigger("error", null, data);
+      this._trigger('error', null, data);
     },
 
     _ajaxUpload: function (inputEl, filename, fileSpan, attachmentId) { var s = this.options, self = this;
