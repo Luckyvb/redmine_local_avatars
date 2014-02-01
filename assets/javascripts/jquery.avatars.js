@@ -85,16 +85,16 @@ jQuery(function ($) {
     },
 
     _updateCrop: function (coords) {
-      var w = this.editWidth * this.previewWidth / coords.w;
-      var h = this.editHeight * this.previewHeight / coords.h;
-      var x = coords.x * this.previewWidth / coords.w;
-      var y = coords.y * this.previewHeight / coords.h;
+      var w = this.editWidth * this.previewWidth / coords.w
+      var h = this.editHeight * this.previewHeight / coords.h
+      var x = coords.x * this.previewWidth / coords.w
+      var y = coords.y * this.previewHeight / coords.h
       this.$previewElem.css({
         width: Math.round(w) + 'px',
         height: Math.round(h) + 'px',
         marginLeft: '-' + Math.round(x) + 'px',
         marginTop: '-' + Math.round(y) + 'px'
-      });
+      })
 
       var rx = this.imgWidth  / this.editWidth;
       var ry = this.imgHeight / this.editHeight;
@@ -104,9 +104,8 @@ jQuery(function ($) {
       this.$cropHElem.val(Math.round(coords.h * ry))
     },
 
-    destroy: function () {
-      this.stop();
-      $.Widget.prototype.destroy.call(this);
+    _destroy: function () {
+      this.stop()
     }
   });
 
@@ -228,9 +227,8 @@ jQuery(function ($) {
     },
 
 
-    destroy: function () {
+    _destroy: function () {
       this.stop();
-      $.Widget.prototype.destroy.call(this);
     },
 
     _random: function () {
@@ -251,7 +249,6 @@ jQuery(function ($) {
       this.element.attr('id', 'uploader_' + this._random());
       this.element.on('change', 'input[type=file]', function () { self.addInputFile(this); });
     },
-    destroy: function () { $.Widget.prototype.destroy.call(this); },
     disable: function () { $(this.options.fileFieldContainer).find('input').prop('disabled', true); },
     enable: function () { $(this.options.fileFieldContainer).find('input').prop('disabled', false); },
 
