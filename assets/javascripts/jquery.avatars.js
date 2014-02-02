@@ -112,6 +112,7 @@ jQuery(function ($) {
   /** WebCam Photographer */
   $.widget('avatars.photographer', {
     options: {
+      previewWidth: null, previewHeight: null,
       resolutionWidth: null, resolutionHeight: null,
       swffile:         'sAS3Cam.swf',
       captureButton:   '#capture-webcam',
@@ -135,8 +136,8 @@ jQuery(function ($) {
 
       $.extend(this.options, {
         filename: this.options.filename || this._random() + '.jpg',
-        previewWidth: this.$webcamContainer.width(),
-        previewHeight: this.$webcamContainer.height(),
+        previewWidth: this.options.previewWidth || this.$webcamContainer.width(),
+        previewHeight: this.options.previewHeight || this.$webcamContainer.height(),
         resolutionWidth: this.options.resolutionWidth || this.$webcamContainer.width(),
         resolutionHeight: this.options.resolutionHeight || this.$webcamContainer.height()
       });
@@ -153,9 +154,9 @@ jQuery(function ($) {
       this.$startButton.prop('disabled', true);
       self._trigger('beforestart', null);
 
-      $('<div>').appendTo(this.$webcamContainer).webcam($.extend(this.options, {
+      $('<div>').appendTo(this.$webcamContainer).webcam($.extend({}, this.options, {
         noCameraFound:  function () { self._error('Web camera is not available') },
-        error:          function () { self._error('Internal camera plugin error') },
+        error:          function (e) { self._error('Internal camera plugin error: ' + (e ? e.name || e : e)) },
         cameraDisabled: function () { self._error('Please allow access to your camera') },
         cameraEnabled:  function () { self._cameraEnabled(this); }
       }));
@@ -202,7 +203,7 @@ jQuery(function ($) {
       });
     },
 
-    _showCamerasSelect: function () { var s = this.options, self = this;
+    _showCamerasSelect: function () { var self = this;
       var cams = this.cameraApi.getCameraList();
       if (cams.length <= 1) return;
 
@@ -241,39 +242,41 @@ jQuery(function ($) {
     options : {
       attachmentId:         1,
       attachmentsContainer: '#attachments_fields',
-      fileFieldContainer:   '.add_attachment',
-      thisSelector:         '.add_attachment'
+      fileFieldContainer:   '.add_attachment'
     },
 
     _create: function () { var self = this;
       this.element.attr('id', 'uploader_' + this._random());
       this.element.on('change', 'input[type=file]', function () { self.addInputFile(this); });
-    },
-    disable: function () { $(this.options.fileFieldContainer).find('input').prop('disabled', true); },
-    enable: function () { $(this.options.fileFieldContainer).find('input').prop('disabled', false); },
 
-    addInputFile: function (inputEl) { var s = this.options;
+      this.$fileFieldContainer = $(this.options.fileFieldContainer);
+      this.$attachmentsContainer = $(this.options.attachmentsContainer);
+    },
+    disable: function () { this.$fileFieldContainer.find('input').prop('disabled', true); },
+    enable: function () { this.$fileFieldContainer.find('input').prop('disabled', false); },
+
+    addInputFile: function (inputEl) {
       var aFilename    = inputEl.value.split(/\/|\\/);
       var filename     = aFilename[aFilename.length - 1];
 
-      var attachmentId = s.attachmentId++;
+      var attachmentId = this.options.attachmentId++;
       var fileSpan = this.createInputField(filename, attachmentId);
       this._ajaxUpload(inputEl, filename, fileSpan, attachmentId);
     },
 
-    createInputField: function (filename, attachmentId) { var s = this.options, self = this;
+    createInputField: function (filename, attachmentId) { var self = this;
       var $fileSpan = $('<span>', { id: 'attachments_' + attachmentId });
 
-      $(s.fileFieldContainer).hide();
-      $fileSpan.on("remove", function () {
-        $(s.fileFieldContainer).show();
-        self._trigger("fileremove", null, { attachmentId: attachmentId });
+      this.$fileFieldContainer.hide();
+      $fileSpan.on('remove', function () {
+        self.$fileFieldContainer.show();
+        self._trigger('fileremove', null, { attachmentId: attachmentId });
       });
 
       $fileSpan.append(
         $('<input>', { type: 'text', 'class': 'filename readonly', name: 'attachment[filename]', readonly: 'readonly'}).val(filename),
-        $('<a>&nbsp</a>').attr({ href: "#", 'class': 'remove-upload' }).click(this._removeFile).hide()
-      ).appendTo(s.attachmentsContainer);
+        $('<a>&nbsp</a>').attr({ href: '#', 'class': 'remove-upload' }).click(this._removeFile).hide()
+      ).appendTo(this.$attachmentsContainer);
 
       return $fileSpan;
     },
@@ -292,16 +295,16 @@ jQuery(function ($) {
         .css('display', 'inline-block')
         .off('click');
 
-      this._trigger("afterupload", null, data);
+      this._trigger('afterupload', null, data);
     },
 
     errorAfterUpload: function (data) {
       this._trigger('error', null, data);
     },
 
-    _ajaxUpload: function (inputEl, filename, fileSpan, attachmentId) { var s = this.options, self = this;
+    _ajaxUpload: function (inputEl, filename, fileSpan, attachmentId) { var self = this;
       var clearedFileInput = $(inputEl).clone().val('');
-      clearedFileInput.prependTo(s.fileFieldContainer);
+      clearedFileInput.prependTo(this.$fileFieldContainer);
 
       var progressSpan = $('<div>').insertAfter(fileSpan.find('input.filename'));
       progressSpan.progressbar();
@@ -309,7 +312,7 @@ jQuery(function ($) {
 
       $('<form>').append(inputEl).ajaxSubmit({
         type:           'POST',
-        url:            self.element.data('upload-path'),
+        url:            self.options.uploadPath,
         data:           {
           filename:      filename,
           attachment_id: attachmentId,

@@ -46,7 +46,7 @@ jQuery(function($) {
 
     init: function(container, options) {
       this.$element = $(container)
-      this.id = setUid(this.$element)
+      this.id = this.setUid(this.$element)
       this.options = this.getOptions(options)
       var callTarget = "jQuery('#" + this.id + "').data('webcam')"
 

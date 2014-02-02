@@ -42,16 +42,9 @@ jQuery(function($) {
       location.reload();
   });
 
-  $cropper.cropper({
-    cropX: 'crop_x', cropY: 'crop_y', cropW: 'crop_w', cropH: 'crop_h',
-    previewContainer: '#preview-box'
-  });
+  $cropper.cropper($cropper.data());
 
-  $uploader.uploader({
-    attachmentsContainer: '#attachments_fields',
-    fileFieldContainer:   '.add_attachment',
-    thisSelector:         '.add_attachment'
-  })
+  $uploader.uploader($uploader.data())
   .bind('uploaderafterupload', function(e, data) {
     cropAvatar(data.attachmentPath, $uploader.data('crop'));
   })
@@ -60,25 +53,14 @@ jQuery(function($) {
     $cropper.cropper('stop');
   });
 
-  $photographer.photographer({
-    startButton:   '#start-webcam',
-    stopButton:    '#stop-webcam',
-    captureButton: '#capture-webcam',
-    camerasSelect: '#capture-cameras select',
-
-    resolutionWidth: 480, resolutionHeight: 480,
-    swffile:   $photographer.data('swffile'),
-    filefield: 'attachment[file]',
-    filename:  $photographer.data('filename'),
-    postUrl:   $photographer.data('upload-path'),
+  $photographer.photographer($.extend({}, $photographer.data(), {
     postData:  {
       filename:           $photographer.data('filename'),
       attachment_id:      'capture',
-      js_callback:        $photographer.data('js-callback'),
       authenticity_token: $('input[name=authenticity_token]').val(),
       uploader:           '#' + $uploader.attr('id')
     }
-  })
+  }))
   .bind('photographererror', function(e, data) { error(data.message); })
   .bind('photographerbeforestart', showPhotographer)
   .bind('photographerbeforestop', showBlank)

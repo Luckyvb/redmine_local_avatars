@@ -14,8 +14,13 @@
       <span id="attachments_fields"></span>
 
       <%= content_tag :span, :class => "add_attachment",
-          :data => { :upload_path => avatar_upload_path(:id => @user, :format => 'js'), :crop => can_crop_images? } do -%>
-      <%= file_field_tag 'attachment[file]', :class => 'file_selector' -%>
+          :data => {
+            :upload_path => avatar_upload_path(:id => @user, :format => 'js'),
+            :crop => can_crop_images?,
+            :attachments_container => '#attachments_fields',
+            :file_field_container => '.add_attachment'
+          } do -%>
+        <%= file_field_tag 'attachment[file]', :class => 'file_selector' -%>
       <% end -%>
     </p>
     <p class="avatar-capture">
@@ -33,13 +38,25 @@
       <%= image_tag "default.jpg", :plugin => "redmine_local_avatars" %>
     </div>
 
-    <div class="gravatar crop-avatar"></div>
+    <%= content_tag :div, nil, :class => 'gravatar crop-avatar',
+      :data => {
+        :crop_x => 'crop_x',
+        :crop_y => 'crop_y',
+        :crop_w => 'crop_w',
+        :crop_h => 'crop_h',
+        :previewContainer => '#preview-box'
+      } -%>
 
-    <%= content_tag :div, nil, :class => "gravatar capture-avatar",
+    <%= content_tag :div, nil, :class => 'gravatar capture-avatar',
         :data => {
+          :start_button => '#start-webcam', :stop_button => '#stop-webcam',
+          :capture_button => '#capture-webcam', :cameras_select => '#capture-cameras select',
+          :preview_width => 300, :preview_height => 300,
+          :resolution_width => 480, :resolution_height => 480,
           :swffile => plugin_image_path('sAS3Cam.swf', :plugin => 'redmine_local_avatars'),
+          :filefield => 'attachment[file]',
           :filename => "#{@user.login}.jpg",
-          :upload_path => avatar_upload_path(:id => @user, :format => 'js')
+          :post_url => avatar_upload_path(:id => @user, :format => 'js')
         } -%>
 
     <p id="capture-cameras">
