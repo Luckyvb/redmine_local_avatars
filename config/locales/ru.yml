@@ -3,8 +3,8 @@ ru:
   label_my_avatar: "Моя фотография"
   label_cameras: "Камеры"
   label_capture_or_upload: "Захват или загрузка"
-  label_preview_and_crop: "Превью и кадрирование"
-  label_preview: "Превью"
+  label_preview_and_crop: "Предпросмотр и кадрирование"
+  label_preview: "Предпросмотр"
   label_upload: "Загрузка на сервер"
   label_webcam: "Web-камера"
 
