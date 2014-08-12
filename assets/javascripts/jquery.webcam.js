@@ -197,13 +197,13 @@ jQuery(function($) {
           success: function(data) { eval(options.js_callback)(data) },
           error: function(xhr, status, e) { self.error(e) }
         })
-      }, 'image/jpg', 1.0);
+      }, 'image/jpeg', 1.0);
     },
 
     save: function() {
       try {
         this.captureToCanvas()
-        var data = this.$canvas[0].toDataURL('image/jpg', 1.0);
+        var data = this.$canvas[0].toDataURL('image/jpeg', 1.0);
         this.$canvas.remove();
         return data.substring(data.indexOf(',')+1);
       } catch(e) {
@@ -217,7 +217,7 @@ jQuery(function($) {
       }
 
       // take apart data URL
-      var url = this.$canvas[0].toDataURL('image/jpg', 1.0)
+      var url = this.$canvas[0].toDataURL('image/jpeg', 1.0)
       var parts = url.match(/^data:([^;]+)(;base64)?,(.*)$/)
 
       // assume base64 encoding
@@ -258,7 +258,7 @@ jQuery(function($) {
       if (this.video.mozSrcObject !== undefined) {
         this.video.mozSrcObject = null
       } else {
-        this.video.src = null
+        this.video.src = ''
       }
       this.stream.stop()
     }
