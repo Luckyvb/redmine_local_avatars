@@ -1,9 +1,20 @@
-# French translation courtesy of luigifab
-# https://bugs.launchpad.net/redminelocalavatars/+bug/692969
+# French strings go here
 fr:
   label_avatar: "Avatar"
-  message_avatar_uploaded: "Avatar enregistré"
+  label_my_avatar: "Mon avatar"
+  label_cameras: "Caméras"
+  label_capture_or_upload: "Capturer ou charger"
+  label_preview_and_crop: "Aperçu et recadrage"
+  label_preview: "Aperçu"
+  label_upload: "Charger"
+  label_webcam: "Webcam"
+
   button_change_avatar: "Modifier l'avatar"
-  are_you_sure_delete_avatar: "Êtes-vous certain de vouloir supprimer votre avatar?"
-  avatar_deleted: "Avatar supprimé"
-  unable_to_delete_avatar: "Une erreur est survenue lors de la suppression de l'avatar."
+  button_stop_webcam: "Arrêter"
+  button_start_webcam: "Démarrer"
+  button_capture_photo: "Capturer"
+  are_you_sure_delete_avatar: "Êtes-vous sûr de vouloir supprimer votre avatar ?"
+  avatar_deleted:  "Avatar supprimé"
+  unable_to_delete_avatar:  "Désolé,  une erreur est survenue lors de la suppression de l'avatar."
+  message_avatar_uploaded: "Avatar chargé avec succès"
+  
