@@ -17,9 +17,9 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 class AvatarController < ApplicationController
-  before_filter :find_user, :except => :my_avatar_edit
-  before_filter :require_login, :check_if_edit_allowed, :only => [ :update, :destroy ]
-  before_filter :find_uploaded_attachment, :only => :update
+  before_action :find_user, :except => :my_avatar_edit
+  before_action :require_login, :check_if_edit_allowed, :only => [ :update, :destroy ]
+  before_action :find_uploaded_attachment, :only => :update
 
   helper :attachments
   helper :avatar
