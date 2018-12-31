@@ -21,7 +21,8 @@ module LocalAvatars::Infectors::ApplicationHelper
     base.send(:include, InstanceMethods)
 
     base.class_eval do
-      alias_method_chain :avatar, :local_avatar
+      alias_method :avatar_without_local_avatar, :avatar
+      alias_method :avatar, :avatar_with_local_avatar
     end
   end
 
