@@ -16,22 +16,27 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-require 'redmine'
+module LocalAvatars::Patches::ApplicationHelper
+  def self.included(base) # :nodoc:
+    base.send(:include, InstanceMethods)
 
-Redmine::Plugin.register :redmine_local_avatars do
-  name 'Redmine Local Avatars plugin'
-  author 'Andrew Chaika, Luca Pireddu and Ricardo Santos'
-  description 'This plugin lets users upload avatars directly into Redmine'
-  version '0.2.1'
-  requires_redmine :version_or_higher => '2.1.0'
+    base.class_eval do
+      alias_method :avatar_without_local_avatar, :avatar if Redmine::VERSION.to_s < '4.1'
+      alias_method :avatar, :avatar_with_local_avatar if Redmine::VERSION.to_s < '4.1'
+    end
+  end
+
+  module InstanceMethods
+    def avatar_with_local_avatar(user, options = { })
+      if user.is_a?(User) && user.attachments.exists?(description: 'avatar')
+        if size = options.delete(:size)
+          options[:size] = "#{size}x#{size}"
+        end
+        options.reverse_merge!(size: '64x64', class: 'gravatar')
+        image_tag user_avatar_url(id: user), options
+      else
+        avatar_without_local_avatar(user, options)
+      end
+    end
+  end
 end
-
-RedmineApp::Application.config.after_initialize do
-  require_dependency 'project'
-  require_dependency 'local_avatars/infectors'
-  ApplicationHelper.include LocalAvatars::Patches::ApplicationHelper if Redmine::VERSION.to_s < '4.1'
-  AvatarsHelper.include LocalAvatars::Patches::AvatarsHelper if Redmine::VERSION.to_s >= '4.1'
-end
-
-# hooks
-require_dependency 'local_avatars/hooks'

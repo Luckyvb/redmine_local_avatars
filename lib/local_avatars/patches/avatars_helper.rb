@@ -16,24 +16,24 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-module LocalAvatars::Infectors::ApplicationHelper
+module LocalAvatars::Patches::AvatarsHelper
   def self.included(base) # :nodoc:
     base.send(:include, InstanceMethods)
 
     base.class_eval do
-      alias_method :avatar_without_local_avatar, :avatar
-      alias_method :avatar, :avatar_with_local_avatar
+      alias_method :avatar_without_local_avatar, :avatar if Redmine::VERSION.to_s >= '4.1'
+      alias_method :avatar, :avatar_with_local_avatar if Redmine::VERSION.to_s >= '4.1'
     end
   end
 
   module InstanceMethods
     def avatar_with_local_avatar(user, options = { })
-      if user.is_a?(User) && user.attachments.exists?(:description => 'avatar')
+      if user.is_a?(User) && user.attachments.exists?(description: 'avatar')
         if size = options.delete(:size)
           options[:size] = "#{size}x#{size}"
         end
-        options.reverse_merge!(:size => "64x64", :class => "gravatar")
-        image_tag user_avatar_url(:id => user), options
+        options.reverse_merge!(size: GravatarHelper::DEFAULT_OPTIONS[:size], class: GravatarHelper::DEFAULT_OPTIONS[:class])
+        image_tag user_avatar_url(id: user), options
       else
         avatar_without_local_avatar(user, options)
       end
