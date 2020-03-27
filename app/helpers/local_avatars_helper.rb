@@ -1,10 +1,13 @@
-module AvatarHelper
-  begin; require 'rmagick'; rescue LoadError;end
-  begin; require 'mini_magick'; rescue LoadError; end
+module LocalAvatarsHelper
+  def user_settings_tabs
+    tabs = super
+    tabs << { name: 'avatar', partial: 'avatar/edit_tab', label: :label_avatar }
+    tabs
+  end
 
   # Images will only be cropped if there are the necessary libraries.
   def can_crop_images?
-    !!(defined?(MiniMagick) || defined?(Magick))
+    defined?(MiniMagick)
   end
 
   # Crops an image and stores it on a temporary file.
@@ -38,30 +41,30 @@ module AvatarHelper
     img.resize_to_fill!(125, 125, Magick::NorthGravity)
 
     temporary_image(
-      :writer => lambda {|f| img.write(f.path) },
-      :consumer => lambda {|f| block.call(f) }
+      writer: ->(f) { img.write(f.path) },
+      consumer: ->(f) { block.call(f) }
     )
   end
 
   def crop_image_with_mini_magick(filepath, crop_values, &block)
     img = MiniMagick::Image.open(filepath)
-    img.crop sprintf("%sx%s+%s+%s", *crop_values) if crop_values.all?
+    img.crop sprintf('%sx%s+%s+%s', *crop_values) if crop_values.all?
     img.combine_options do |c|
-      c.thumbnail "125x125^"
-      c.gravity "north"
-      c.extent "125x125"
+      c.thumbnail '125x125^'
+      c.gravity 'north'
+      c.extent '125x125'
     end
     img.format('jpg')
 
     temporary_image(
-      :writer => lambda {|f| img.write(f) },
-      :consumer => lambda {|f| block.call(f) }
+      writer: ->(f) { img.write(f) },
+      consumer: ->(f) { block.call(f) }
     )
   end
 
   def temporary_image(options)
     begin
-      file = Tempfile.open(['img', '.jpg'], Rails.root.join('tmp'), :encoding => 'ascii-8bit') do |f|
+      file = Tempfile.open(['img', '.jpg'], Rails.root.join('tmp'), encoding: 'ascii-8bit') do |f|
         options[:writer].call(f); f
       end
       File.open(file.path, 'rb') do |f|
@@ -69,17 +72,16 @@ module AvatarHelper
         options[:consumer].call(f)
       end
     ensure
-      file.unlink if file
+      file&.unlink
     end
   end
 
   def plugin_image_path(source, options = {})
     if plugin = options.delete(:plugin)
       source = "/plugin_assets/#{plugin}/images/#{source}"
-    elsif current_theme && current_theme.images.include?(source)
+    elsif current_theme&.images&.include?(source)
       source = current_theme.image_path(source)
     end
     path_to_image(source)
   end
-
 end
