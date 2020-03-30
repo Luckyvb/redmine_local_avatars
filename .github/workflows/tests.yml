@@ -18,10 +18,14 @@ jobs:
           - v2.4
           - v2.6
 
+        database:
+          - sqlite3
+
     steps:
       - name: Redmine plugin test
-        uses: two-pack/redmine-plugin-test-action@v2
+        uses: two-pack/redmine-plugin-test-action@add_db_option
         with:
           plugin_name: redmine_local_avatars
           redmine_version: ${{ matrix.redmine }}
           ruby_version: ${{ matrix.ruby }}
+          database: ${{ matrix.database }}

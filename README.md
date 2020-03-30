@@ -17,10 +17,7 @@ installation (or create a symlink).
 Compatibility
 -------------
 
-Tested on Redmine trunk r12471 (version 2.4.2.devel). Should be compatible with
-all Redmine versions 2.1.x.
-
-At the moment the plugin doesn't work when running in development mode.
+- Redmine 4.1 is required
 
 Authors
 -------

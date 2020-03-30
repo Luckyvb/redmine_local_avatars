@@ -63,17 +63,17 @@ module LocalAvatarsHelper
   end
 
   def temporary_image(options)
-    begin
-      file = Tempfile.open(['img', '.jpg'], Rails.root.join('tmp'), encoding: 'ascii-8bit') do |f|
-        options[:writer].call(f); f
-      end
-      File.open(file.path, 'rb') do |f|
-        def f.original_filename; File.basename(path); end
-        options[:consumer].call(f)
-      end
-    ensure
-      file&.unlink
+    file = Tempfile.open(['img', '.jpg'], Rails.root.join('tmp'), encoding: 'ascii-8bit') do |f|
+      options[:writer].call(f)
+      f
     end
+
+    File.open(file.path, 'rb') do |f|
+      def f.original_filename; File.basename(path); end
+      options[:consumer].call(f)
+    end
+  ensure
+    file&.unlink
   end
 
   def plugin_image_path(source, options = {})
