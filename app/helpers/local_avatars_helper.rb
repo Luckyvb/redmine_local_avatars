@@ -30,9 +30,16 @@ module LocalAvatarsHelper
     crop_image_with_mini_magick(*args, &block)
   end
 
-  def crop_image_with_mini_magick(filepath, crop_values, &block)
+  def crop_image_with_mini_magick(filepath, crop_values)
     img = MiniMagick::Image.open(filepath)
-    img.crop format('%sx%s+%s+%s', *crop_values) if crop_values.all?
+    if crop_values.all?
+      img.crop format('%<width>sx%<height>s+%<x_offset>s+%<y_offset>s',
+                      width: crop_values[0],
+                      height: crop_values[1],
+                      x_offset: crop_values[2],
+                      y_offset: crop_values[3])
+    end
+
     img.combine_options do |c|
       c.thumbnail '125x125^'
       c.gravity 'north'
@@ -42,7 +49,7 @@ module LocalAvatarsHelper
 
     temporary_image(
       writer: ->(f) { img.write(f) },
-      consumer: ->(f) { block.call(f) }
+      consumer: ->(f) { yield f }
     )
   end
 
@@ -53,7 +60,10 @@ module LocalAvatarsHelper
     end
 
     File.open(file.path, 'rb') do |f|
-      def f.original_filename; File.basename(path); end
+      def
+        f.original_filename
+        File.basename(path)
+      end
       options[:consumer].call(f)
     end
   ensure
