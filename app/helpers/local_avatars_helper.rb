@@ -25,30 +25,14 @@ module LocalAvatarsHelper
   #       send_file file.path, :type => 'image/jpeg', :disposition => 'inline'
   #     end
   def crop_image(*args, &block)
-    if defined? Magick
-      crop_image_with_rmagick(*args, &block)
-    elsif defined? MiniMagick
-      crop_image_with_mini_magick(*args, &block)
-    end
-  end
+    return unless defined? MiniMagick
 
-  def crop_image_with_rmagick(filepath, crop_values, &block)
-    img = Magick::Image.read(filepath).first.dup
-    if crop_values.all?
-      crop_values = crop_values[2..3] + crop_values[0..1]
-      img.crop!(*crop_values.map(&:to_i))
-    end
-    img.resize_to_fill!(125, 125, Magick::NorthGravity)
-
-    temporary_image(
-      writer: ->(f) { img.write(f.path) },
-      consumer: ->(f) { block.call(f) }
-    )
+    crop_image_with_mini_magick(*args, &block)
   end
 
   def crop_image_with_mini_magick(filepath, crop_values, &block)
     img = MiniMagick::Image.open(filepath)
-    img.crop sprintf('%sx%s+%s+%s', *crop_values) if crop_values.all?
+    img.crop format('%sx%s+%s+%s', *crop_values) if crop_values.all?
     img.combine_options do |c|
       c.thumbnail '125x125^'
       c.gravity 'north'

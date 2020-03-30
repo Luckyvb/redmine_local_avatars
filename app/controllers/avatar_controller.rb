@@ -62,11 +62,8 @@ class AvatarController < ApplicationController
   private
 
   def find_user
-    @user = if params[:id].present?
-              User.find(params[:id])
-            else
-              User.current
-            end
+    id = params[:user_id].presence || params[:id]
+    @user = id.present? ? User.find(id) : User.current
   rescue ActiveRecord::RecordNotFound
     render_404
   end
