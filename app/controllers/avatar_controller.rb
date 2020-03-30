@@ -21,9 +21,8 @@ class AvatarController < ApplicationController
   end
 
   def update
-    @user.attachments.where(description: 'avatar').destroy_all
-
     if @uploaded_attachment.present?
+      @user.attachments.where(description: 'avatar').destroy_all
       crop_values = params.values_at(:crop_w, :crop_h, :crop_x, :crop_y)
       crp = crop_image(@uploaded_attachment.diskfile, crop_values) do |f|
         @uploaded_attachment.destroy
@@ -32,16 +31,22 @@ class AvatarController < ApplicationController
       end
       logger.error("crp is #{crp} and params is #{params[:attachment]}")
       @user.save_attachments([params[:attachment].update(description: 'avatar')]) unless crp
+
+      flash[:notice] = l(:message_avatar_uploaded) if @user.save
     end
 
-    flash[:notice] = l(:message_avatar_uploaded) if @user.save
-    redirect_to_referer_or edit_my_avatar_path
+    if @user == User.current
+      redirect_to my_account_path
+    else
+      redirect_to edit_user_path(id: @user.id, tab: 'avatar')
+    end
   end
 
+  # used by sidebar to destroy own user account
   def destroy
     @user.attachments.where(description: 'avatar').destroy_all
     flash[:notice] = l(:avatar_deleted)
-    render nothing: true, status: :ok
+    redirect_to my_account_destroy_path
   end
 
   def upload
@@ -73,6 +78,6 @@ class AvatarController < ApplicationController
   def find_uploaded_attachment
     return if params[:attachment].blank? || params[:attachment][:token].blank?
 
-    @uploaded_attachment = Attachment.find_by_token(params[:attachment][:token])
+    @uploaded_attachment = Attachment.find_by_token(params[:attachment][:token]) # rubocop:disable Rails/DynamicFindBy
   end
 end

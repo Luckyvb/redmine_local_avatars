@@ -38,10 +38,6 @@ jQuery(function($) {
     }
   }
 
-  $('#delete-avatar').bind('ajax:success', function(e, d) {
-      location.reload();
-  });
-
   $cropper.cropper($cropper.data());
 
   $uploader.uploader($uploader.data())
@@ -69,19 +65,5 @@ jQuery(function($) {
   })
   .bind('photographerafterupload', function(e, data) {
     $.globalEval(data.text.replace(/<\/?textarea>|/g, ''));
-  });
-
-  $.rails.href = function(element) {
-    var href = element.attr('href');
-    if (href) return href;
-    else      return element.data('url')
-  }
-
-  $(document).delegate('input[type=button][data-remote]', 'click.rails', function(e) {
-      var button = $(this);
-      if (!$.rails.allowAction(button)) return $.rails.stopEverything(e);
-
-      $.rails.handleRemote(button);
-      return false;
   });
 });

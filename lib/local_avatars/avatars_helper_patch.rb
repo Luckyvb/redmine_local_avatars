@@ -26,7 +26,7 @@ module LocalAvatars
             default_size = GravatarHelper::DEFAULT_OPTIONS[:size]
             options[:size] = "#{default_size}x#{default_size}"
           end
-          image_tag user_avatar_url(id: user), options
+          image_tag user_avatar_url(user), options
         else
           avatar_without_local_avatar(user, options)
         end

@@ -1,4 +1,4 @@
-<%= form_tag(update_user_avatar_path(@user), multipart: true, id: 'avatar-form') do -%>
+<%= form_tag(user_avatar_path(@user), multipart: true, id: 'avatar-form') do -%>
   <div style="width: 148px; float: left;">
 
     <div id="preview-box" class="gravatar">
@@ -15,7 +15,7 @@
 
       <%= content_tag :span, :class => "add_attachment",
           :data => {
-            :upload_path => avatar_upload_path(:id => @user, :format => 'js'),
+            :upload_path => user_avatar_upload_path(@user, :format => 'js'),
             :crop => can_crop_images?,
             :attachments_container => '#attachments_fields',
             :file_field_container => '.add_attachment'
@@ -56,7 +56,7 @@
           :swffile => plugin_image_path('sAS3Cam.swf', :plugin => 'redmine_local_avatars'),
           :filefield => 'attachment[file]',
           :filename => "#{@user.login}.jpg",
-          :post_url => avatar_upload_path(:id => @user, :format => 'js')
+          :post_url => user_avatar_upload_path(@user, :format => 'js')
         } -%>
 
     <p id="capture-cameras">
@@ -68,10 +68,8 @@
   <div style="clear: both;"></div>
   <div>
   <%= submit_tag l(:button_save) %>
-  <%= link_to l(:button_delete), destroy_user_avatar_url(@user),
-              data: { confirm: l(:text_are_you_sure), remote: true},
-              method: :delete,
-              id: 'delete-avatar',
+  <%= link_to l(:button_delete), user_avatar_destroy_path(@user),
+              data: { confirm: l(:text_are_you_sure) },
               class: 'delete',
               title: l(:button_delete) %>
 
