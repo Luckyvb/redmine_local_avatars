@@ -1,6 +1,8 @@
 Redmine Local Avatars
 =====================
 
+![Run Tests](https://github.com/alexandermeindl/redmine_local_avatars/workflows/Run%20Tests/badge.svg)
+
 This plugin allows Redmine users to upload a picture to be used as an avatar
 (instead of depending on images from Gravatar).
 

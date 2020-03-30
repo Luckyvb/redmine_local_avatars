@@ -77,7 +77,8 @@ module LocalAvatarsHelper
   end
 
   def plugin_image_path(source, options = {})
-    if plugin = options.delete(:plugin)
+    plugin = options.delete(:plugin)
+    if plugin
       source = "/plugin_assets/#{plugin}/images/#{source}"
     elsif current_theme&.images&.include?(source)
       source = current_theme.image_path(source)
