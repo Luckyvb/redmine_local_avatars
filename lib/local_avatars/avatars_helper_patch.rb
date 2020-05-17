@@ -13,7 +13,7 @@ module LocalAvatars
 
     module InstanceMethods
       def avatar_with_local_avatar(user, options = {})
-        if user.is_a?(User) && user.attachments.exists?(description: 'avatar')
+        if (user.is_a?(User) || user.is_a?(Group)) && user.attachments.exists?(description: 'avatar')
           if (size = options.delete(:size))
             options[:size] = "#{size}x#{size}"
           end
@@ -26,7 +26,11 @@ module LocalAvatars
             default_size = GravatarHelper::DEFAULT_OPTIONS[:size]
             options[:size] = "#{default_size}x#{default_size}"
           end
-          image_tag user_avatar_url(user), options
+          if user.is_a?(User)
+            image_tag user_avatar_url(user), options
+          elsif user.is_a?(Group)
+            image_tag group_avatar_url(user), options
+          end
         else
           avatar_without_local_avatar(user, options)
         end

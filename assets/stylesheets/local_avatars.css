@@ -43,3 +43,12 @@ div#avatar-buttons div {
 .crop-avatar, .capture-avatar, #capture-cameras, button#stop-webcam {
 	display: none;
 }
+
+td.groupname img.gravatar {
+    margin: 0 0.5em 0 0;
+    vertical-align: top;
+}
+
+.icon.fa.fa-photo.change-avatar {
+    background-image: url(../images/avatar-edit.svg);
+}

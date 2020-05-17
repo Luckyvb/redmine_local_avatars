@@ -7,7 +7,7 @@ This plugin allows Redmine users to upload a picture to be used as an avatar
 (instead of depending on images from Gravatar).
 
 Users can set their image through the `/my/account` page.  The administrator can
-also manage users' avatars through the `/users` section.
+also manage users' avatars through the `/users` and /groups sections.
 
 Installation
 ------------
@@ -28,6 +28,8 @@ A. Chaika wrote the original version:
 
 * http://www.redmine.org/boards/3/topics/5365
 * https://github.com/Ubik/redmine_local_avatars
+* https://github.com/thorin/redmine_local_avatars Thorin
+* https://github.com/alexandermeindl/redmine_local_avatars Alexander Meindl
 
 Luca Pireddu (<pireddu@gmail.com>) at CRS4 ([http://www.crs4.it](http://www.crs4.it)),
 contributed updates and improvements.
@@ -49,7 +51,7 @@ Implementation Notes
 
 Avatar images are treated as attachments to User objects with the description
 'avatar'.  The AccountController is patched to provide the images, and the
-UsersController and MyController are patched to provide mechanisms to add/delete
+UsersController, GroupsController and MyController are patched to provide mechanisms to add/delete
 avatars.
 
 

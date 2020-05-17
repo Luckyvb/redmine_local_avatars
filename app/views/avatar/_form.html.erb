@@ -1,8 +1,8 @@
-<%= form_tag(user_avatar_path(@user), multipart: true, id: 'avatar-form') do -%>
+<%= form_tag(@user.is_a?(User) ? user_avatar_path(@user) :  group_avatar_path(@group), multipart: true, id: 'avatar-form') do -%>
   <div style="width: 148px; float: left;">
 
     <div id="preview-box" class="gravatar">
-      <%= avatar(@user, :size => "128", :id => 'preview', :class => '') %>
+      <%= avatar(@user.is_a?(User) ? @user : @group, :size => "128", :id => 'preview', :class => '') %>
     </div><br />
 
   </div>
@@ -15,7 +15,7 @@
 
       <%= content_tag :span, :class => "add_attachment",
           :data => {
-            :upload_path => user_avatar_upload_path(@user, :format => 'js'),
+            :upload_path => @user.is_a?(User) ? user_avatar_upload_path(@user, :format => 'js') : group_avatar_upload_path(@group, :format => 'js'),
             :crop => can_crop_images?,
             :attachments_container => '#attachments_fields',
             :file_field_container => '.add_attachment'
@@ -55,8 +55,8 @@
           :resolution_width => 480, :resolution_height => 480,
           :swffile => plugin_image_path('sAS3Cam.swf', :plugin => 'redmine_local_avatars'),
           :filefield => 'attachment[file]',
-          :filename => "#{@user.login}.jpg",
-          :post_url => user_avatar_upload_path(@user, :format => 'js')
+          :filename => "#{@user.is_a?(User) ? @user.login : @group.login}.jpg",
+          :post_url => @user.is_a?(User) ? user_avatar_upload_path(@user, :format => 'js') : group_avatar_upload_path(@group, :format => 'js')
         } -%>
 
     <p id="capture-cameras">
@@ -68,7 +68,7 @@
   <div style="clear: both;"></div>
   <div>
   <%= submit_tag l(:button_save) %>
-  <%= link_to l(:button_delete), user_avatar_destroy_path(@user),
+  <%= link_to l(:button_delete), @user.is_a?(User) ? user_avatar_destroy_path(@user) : group_avatar_destroy_path(@group),
               data: { confirm: l(:text_are_you_sure) },
               class: 'delete',
               title: l(:button_delete) %>

@@ -5,6 +5,12 @@ module LocalAvatarsHelper
     tabs
   end
 
+  def group_settings_tabs(group)
+    tabs = super
+    tabs << { name: 'avatar', partial: 'avatar/edit_tab', label: :label_avatar }
+    tabs
+  end
+
   # Images will only be cropped if there are the necessary libraries.
   def can_crop_images?
     defined?(MiniMagick)

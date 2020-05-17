@@ -1,5 +1,6 @@
 class AvatarController < ApplicationController
   before_action :find_user, except: :my_avatar_edit
+  before_action :find_group, except: :my_avatar_edit
   before_action :require_login, :check_if_edit_allowed, only: %i[update destroy]
   before_action :find_uploaded_attachment, only: :update
 
@@ -10,11 +11,11 @@ class AvatarController < ApplicationController
   def my_avatar_edit; end
 
   def show
-    av = @user.attachments.where(description: 'avatar').first
+    principal = @group.is_a?(Group) ? @group : @user
+    av = principal.attachments.where(description: 'avatar').first
     if av
       send_file(av.diskfile, filename: filename_for_content_disposition(av.filename),
-                             type: av.content_type,
-                             disposition: (av.image? ? 'inline' : 'attachment'))
+                             type: av.content_type, disposition: (av.image? ? 'inline' : 'attachment'))
     else
       render_404
     end
@@ -22,23 +23,28 @@ class AvatarController < ApplicationController
 
   def update
     if @uploaded_attachment.present?
-      @user.attachments.where(description: 'avatar').destroy_all
+      principal = @group.is_a?(Group) ? @group : @user
+      principal.attachments.where(description: 'avatar').destroy_all
       crop_values = params.values_at(:crop_w, :crop_h, :crop_x, :crop_y)
       crp = crop_image(@uploaded_attachment.diskfile, crop_values) do |f|
         @uploaded_attachment.destroy
-        @user.save_attachments([{ 'file' => f, 'description' => 'avatar' }])
-        @user.save
+        principal.save_attachments([{ 'file' => f, 'description' => 'avatar' }])
+        principal.save
       end
       logger.error("crp is #{crp} and params is #{params[:attachment]}")
-      @user.save_attachments([params[:attachment].update(description: 'avatar')]) unless crp
+      principal.save_attachments([params[:attachment].update(description: 'avatar')]) unless crp
 
-      flash[:notice] = l(:message_avatar_uploaded) if @user.save
+      flash[:notice] = l(:message_avatar_uploaded) if principal.save
     end
 
-    if @user == User.current
+    if principal == User.current
       redirect_to my_account_path
     else
-      redirect_to edit_user_path(id: @user.id, tab: 'avatar')
+      if principal.is_a?(User)
+        redirect_to edit_user_path(id: principal.id, tab: 'avatar')
+      else
+        redirect_to edit_group_path(id: principal.id, tab: 'avatar')
+      end
     end
   end
 
@@ -64,6 +70,13 @@ class AvatarController < ApplicationController
   def find_user
     id = params[:user_id].presence || params[:id]
     @user = id.present? ? User.find(id) : User.current
+  rescue ActiveRecord::RecordNotFound
+    render_404
+  end
+
+  def find_group
+    id = params[:group_id].presence || params[:id]
+    @group = id.present? ? Group.find(id) : nil
   rescue ActiveRecord::RecordNotFound
     render_404
   end
